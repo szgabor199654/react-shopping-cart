@@ -4,6 +4,7 @@ import { useState } from "react";
 import Products from "./components/Products";
 import Filter from "./components/Filter";
 import Cart from "./components/Cart";
+
 function App() {
   const [state, setState] = useState({
     products: data.products,
