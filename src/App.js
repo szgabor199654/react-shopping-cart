@@ -3,12 +3,39 @@ import data from "./data.json";
 import { useState } from "react";
 import Products from "./components/Products";
 import Filter from "./components/Filter";
+import Cart from "./components/Cart";
 function App() {
   const [state, setState] = useState({
     products: data.products,
+    cartItems: [],
     size: "",
     sort: "",
   });
+
+  const removeFromCart = (product) => {
+    setState({
+      ...state,
+      cartItems: state.cartItems.filter((x) => x._id !== product._id),
+    });
+  };
+
+  const addToCart = (product) => {
+    const cartItems = state.cartItems.slice();
+    let alreadyInCart = false;
+    cartItems.forEach((item) => {
+      if (item._id === product._id) {
+        item.count++;
+        alreadyInCart = true;
+      }
+    });
+    if (!alreadyInCart) {
+      cartItems.push({ ...product, count: 1 });
+    }
+    setState({
+      ...state,
+      cartItems: cartItems,
+    });
+  };
 
   const sortProducts = (e) => {
     setState({
@@ -63,9 +90,11 @@ function App() {
               filterProducts={filterProducts}
               sortProducts={sortProducts}
             />
-            <Products products={state.products} />
+            <Products products={state.products} addToCart={addToCart} />
           </div>
-          <div className="sidebar">Cart Items</div>
+          <div className="sidebar">
+            <Cart cartItems={state.cartItems} removeFromCart={removeFromCart} />
+          </div>
         </div>
       </main>
       <footer>All right is reserved</footer>
